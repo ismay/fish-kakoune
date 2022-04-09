@@ -1,3 +1,3 @@
-set -gx VISUAL k
-set -gx EDITOR k
-set -gx GIT_EDITOR k
+set -gx VISUAL kak
+set -gx EDITOR kak
+set -gx GIT_EDITOR kak
