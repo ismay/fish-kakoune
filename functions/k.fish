@@ -1,4 +1,4 @@
-function kc --wraps kak --description "Connect to existing kakoune session or create a new one"
+function k --wraps kak --description "Connect to existing kakoune session or create a new one"
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1
     or ! git rev-parse --show-toplevel >/dev/null 2>&1
 
