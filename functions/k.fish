@@ -1,21 +1,28 @@
-function k --wraps kak --description "Connect to existing kakoune session or create a new one"
-  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1
-    or ! git rev-parse --show-toplevel >/dev/null 2>&1
+function k --description "Connect to existing kakoune session or create a new one" --argument-names filename
+    if test -n "$filename"
+        # Use the working dir of the filename if one was passed
+        set -f file_basedir (dirname (realpath $filename))
+    else
+        # Use the current working directory if there's no filename
+        set -f file_basedir (pwd)
+    end
 
-    # If git toplevel can't be found, run a disconnected session
-    kak $argv
-    return
-  end
+    set -l git_toplevel (fish -c "cd $file_basedir && git rev-parse --show-toplevel 2>/dev/null")
 
-  set -l dirname (git rev-parse --show-toplevel)
-  set -l projectname (basename $dirname | string replace . -)
-  set -l session (kak -l | grep $projectname)
+    if test -z $git_toplevel
+        # Run a disconnected session if not in a git repo
+        kak $filename
+        return
+    end
 
-  if test -z "$session"
-    # Create a new session if there are none
-    kak -s $projectname $argv
-  else
-    # Otherwise connect to existing session
-    kak -c $projectname $argv
-  end
+    set -l projectname (basename $git_toplevel | string replace . -)
+    set -l session (kak -l | grep $projectname)
+
+    if test -z "$session"
+        # Create a new session if there are none
+        kak -s $projectname $filename
+    else
+        # Otherwise connect to existing session
+        kak -c $projectname $filename
+    end
 end
