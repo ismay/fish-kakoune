@@ -10,8 +10,8 @@ function kakoune_session --description "Get session name from filename" --argume
     set -l git_toplevel (fish -c "cd $file_basedir && git rev-parse --show-toplevel 2>/dev/null")
 
     if test -z $git_toplevel
-        # Echo the basename of the folder the target file resides in if not in git repo
-        echo (basename $file_basedir)
+        # Echo the basename of the target folder if not in git repo
+        echo (basename $file_basedir | string replace . -)
         return
     end
 
